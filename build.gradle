@@ -1,0 +1,64 @@
+buildscript {
+    ext{
+        springCommonCacheVersion = '2.0.0-RELEASE'
+        javaVersion = 1.8
+        dockerGradlePluginVersion = '0.19.2'
+        springBootGradlePluginVersion = '2.0.3.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
+        imageVersion = "latest"
+    }
+    repositories {
+        maven { url 'http://lvyue.ncoppo.com:8081/repository/maven-public/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}"
+        classpath("gradle.plugin.com.palantir.gradle.docker:gradle-docker:${dockerGradlePluginVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.palantir.docker'
+apply plugin: "io.spring.dependency-management"
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+bootJar {
+    baseName = 'summer-wms'
+    version = '1.0.0-RELEASE'
+}
+
+// tag::task[]
+docker {
+    name "${group}/${bootJar.baseName}:${imageVersion}"
+    files bootJar.archivePath
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+}
+
+repositories {
+    maven { url 'http://lvyue.ncoppo.com:8081/repository/maven-public/' }
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    // mysql
+    compile('mysql:mysql-connector-java')
+    // druid
+    compile("com.alibaba:druid-spring-boot-starter:${druidVersion}")
+    // pinyin4j
+    compile("com.belerweb:pinyin4j:${pinyin4jVersion}")
+    compile("org.springframework.boot:spring-boot-starter-aop")
+    compile 'ru.yandex.clickhouse:clickhouse-jdbc:0.1.36'
+    compile group: 'io.springside', name: 'springside-utils', version: '5.0.0-RC1'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.0'
+
+}

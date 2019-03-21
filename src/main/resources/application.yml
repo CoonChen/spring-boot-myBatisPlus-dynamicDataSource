@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    db1:
+      url: jdbc:mysql://chenjl.club:3316/dynamic_database_1?useUnicode=true&autoReconnect=true&useSSL=false&&characterEncoding=utf-8
+      username: root
+      password: chen101010
+      driver-class-name: com.mysql.jdbc.Driver
+    db2:
+      url: jdbc:mysql://chenjl.club:3316/dynamic_database_2?useUnicode=true&autoReconnect=true&useSSL=false&&characterEncoding=utf-8
+      username: root
+      password: chen101010
+      driver-class-name: com.mysql.jdbc.Driver
+    db3:
+      url: jdbc:clickhouse://chenjl.club:8123/summer_cn?socket_timeout=1000000
+      username:
+      password:
+      driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: AUTO
+  configuration:
+    map-underscore-to-camel-case: true
+
+
